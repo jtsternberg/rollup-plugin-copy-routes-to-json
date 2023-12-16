@@ -1,0 +1,25 @@
+{
+	"name": "rollup-plugin-copy-routes-to-json",
+	"version": "0.0.1",
+	"description": "Converts JavaScript files containing route definitions into JSON files",
+	"keywords": [
+		"rollup-plugin",
+		"router",
+		"vue-router",
+		"JSON"
+	],
+	"homepage": "https://github.com/jtsternberg/rollup-plugin-copy-routes-to-json",
+	"author": {
+		"name": "Justin Sternberg",
+		"url": "https://jtsternberg.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jtsternberg/rollup-plugin-copy-routes-to-json.git"
+	},
+	"main": "index.js",
+	"scripts": {
+		"postpublish": "git push && git push --tags"
+	},
+	"dependencies": {}
+}
