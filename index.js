@@ -1,22 +1,30 @@
 import { basename, join } from 'path'
-import fs from 'fs/promises'
 
-const copyRoutesJson = (options = {}) => {
+export default function copyRoutesJson(options = {}) {
 	const { targets = [], hook = 'buildEnd' } = options
+
+	const callback = async function() {
+		targets.forEach(async target => {
+
+			// Import target.src as a module and convert to JSON.
+			// Only works with "type": "module" in package.json.
+			const routes     = await import(`${target.src}?${Date.now()}`)
+			const importFrom = target.importFrom || 'default'
+			const contents   = JSON.stringify(routes[importFrom], null, 2)
+			const destFile   = target.dest || basename(target.src).replace('.js', '.json');
+
+			await this.emitFile({
+				type: 'asset',
+				name: destFile,
+				fileName: destFile,
+				source: contents,
+			})
+		})
+	};
+
 	return {
 		name: 'copy-routes-json',
-		[hook]: () => {
-			targets.forEach(async target => {
-
-				const routes = await import(target.src)
-				const contents = JSON.stringify(routes.default, null, 2)
-				await fs.mkdir(target.dest, { recursive: true })
-
-				const destPath = join(target.dest, basename(target.src).replace('.js', '.json'))
-				// Now write the routes as JSON into the destPath
-				await fs.writeFile(destPath, contents)
-			})
-		}
+		apply: 'build',
+		[hook]: callback,
 	}
 }
-export default copyRoutesJson
